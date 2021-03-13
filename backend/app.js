@@ -3,6 +3,7 @@ const express = require("express");
 const morgan = require("morgan");
 const createError = require("http-errors");
 const authRoutes = require('./Routes/auth');
+const contactsRoutes = require('./Routes/contacts')
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.get('/', (req,res) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/contacts', contactsRoutes)
 
 // Errors
 app.use(async (res,req,next) => {
