@@ -1,11 +1,19 @@
+const { PrismaClient }  = require('@prisma/client');
+const prisma = new PrismaClient();
+
 // Get all contacts
-exports.getContacts = (req,res,next) => {
-    res.send('Get All Contacts')
+
+exports.getContacts = async (req,res,next) => {
+    const contacts = await prisma.contact.findMany()
+
+    res.status(200).json({
+        data: contacts
+    })
 }
 
 // Add contact
 exports.addContact = (req,res,next) => {
-    res.send('add contact')
+
 }
 
 // Update contact
