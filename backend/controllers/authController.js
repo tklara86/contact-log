@@ -4,7 +4,7 @@ const createError = require('http-errors');
 const {authSchema} = require('../helpers/validation_schema');
 const bcrypt = require('bcrypt');
 
-const { signAccessToken } = require('../helpers/jwt_helper');
+const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../helpers/jwt_helper');
 
 exports.register = async (req,res, next) => {
     try {
@@ -42,9 +42,11 @@ exports.register = async (req,res, next) => {
         })
 
         const accessToken = await signAccessToken(user.id)
+        const refreshToken = await signRefreshToken(user.id)
 
         res.status(200).json({
-            accessToken
+            accessToken,
+            refreshToken
         })
 
     } catch (error) {
@@ -68,13 +70,16 @@ exports.login = async (req,res,next) => {
 
         // if user not found
         if (!user) throw createError.NotFound('User not registered')
-        
+
+        const accessToken = await signAccessToken(user.id)
+        const refreshToken = await signRefreshToken(user.id)
         // Compare passwords and send access token
         bcrypt.compare(password, user.password, async (err, isMatch) => {
             if (isMatch) {
-                const accessToken = await signAccessToken(user.id)
+
                 res.status(200).json({
-                    accessToken
+                    accessToken,
+                    refreshToken
                 })
             }
 
@@ -91,8 +96,20 @@ exports.login = async (req,res,next) => {
     }
 }
 
-exports.refreshToken = (req,res, next) => {
-    res.send('Refresh Token Route')
+exports.refreshToken = async (req,res, next) => {
+    try {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) throw createError.BadRequest()
+
+        const userId = await verifyRefreshToken(refreshToken)
+
+        const accessToken  = await signAccessToken(userId)
+        const refreshedToken = await signRefreshToken(userId)
+        res.send({ accessToken, refreshedToken })
+    } catch (e) {
+        next(e)
+    }
 }
 
 
