@@ -68,9 +68,9 @@ exports.login = async (req,res,next) => {
 
         // if user not found
         if (!user) throw createError.NotFound('User not registered')
-
+        
         // Compare passwords and send access token
-       bcrypt.compare(password, user.password, async (err, isMatch) => {
+        bcrypt.compare(password, user.password, async (err, isMatch) => {
             if (isMatch) {
                 const accessToken = await signAccessToken(user.id)
                 res.status(200).json({

@@ -3,7 +3,8 @@ const express = require("express");
 const morgan = require("morgan");
 const createError = require("http-errors");
 const authRoutes = require('./Routes/auth');
-const contactsRoutes = require('./Routes/contacts')
+const contactsRoutes = require('./Routes/contacts');
+const { verifyAccessToken } = require('./helpers/jwt_helper');
 
 const app = express();
 
@@ -11,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 app.use(morgan('dev'))
 
-app.get('/', (req,res) => {
+app.get('/', verifyAccessToken, async (req,res, next) => {
     res.send("<h1>Hello from main page</h1>")
 })
 

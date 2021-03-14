@@ -16,7 +16,6 @@ model User {
       contacts      Contact[]
 }
 
-
 model Contact {
     @@map(name: "contacts")
     id              Int             @default(autoincrement())  @id
@@ -28,7 +27,6 @@ model Contact {
     user            User            @relation(fields: [userId], references: [id])
     userId          Int
 }
-
 
 
 enum ContactType {
