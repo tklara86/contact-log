@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 const createError = require('http-errors');
 const {authSchema} = require('../helpers/validation_schema');
 const bcrypt = require('bcrypt');
+const client = require('../helpers/init_redis');
 
 const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../helpers/jwt_helper');
 
@@ -113,6 +114,25 @@ exports.refreshToken = async (req,res, next) => {
 }
 
 
-exports.logout = (req,res, next) => {
-    res.send('Logout route')
+exports.logout = async (req,res, next) => {
+    try {
+        const { refreshToken } = req.body
+
+        if (!refreshToken) throw createError.BadRequest()
+
+        const userId = await verifyRefreshToken(refreshToken)
+
+        client.DEL(userId, (err, val) => {
+            if (err) {
+                console.log(err.message);
+                throw createError.InternalServerError();
+            }
+            console.log(val);
+            res.sendStatus(204)
+
+        })
+
+    } catch (error) {
+        next(error)
+    }
 }
