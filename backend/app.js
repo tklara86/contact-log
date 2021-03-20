@@ -1,5 +1,4 @@
 require("dotenv").config();
-require('./helpers/init_redis');
 const express = require("express");
 const morgan = require("morgan");
 const createError = require("http-errors");
