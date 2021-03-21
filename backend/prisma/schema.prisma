@@ -10,21 +10,22 @@ generator client {
 
 model User {
       @@map(name: "users")
-      id            Int         @default(autoincrement()) @id
-      email         String      @unique
+      id            Int                         @default(autoincrement()) @id
+      email         String                      @unique
       password      String
       contacts      Contact[]
 }
 
 model Contact {
     @@map(name: "contacts")
-    id              Int             @default(autoincrement())  @id
+    id              Int                         @default(autoincrement())  @id
     name            String
     email           String
     phone           String?
-    contactType     ContactType     @default(PERSONAL)
-    date            DateTime
-    user            User            @relation(fields: [userId], references: [id])
+    contactType     ContactType                 @default(PERSONAL)
+    createdAt       DateTime                    @default(now())    @map("created_at")
+    updatedAt       DateTime                    @updatedAt         @map("updated_at")
+    user            User                        @relation(fields: [userId], references: [id])
     userId          Int
 }
 

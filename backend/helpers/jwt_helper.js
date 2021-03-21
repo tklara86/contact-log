@@ -7,7 +7,7 @@ exports.signAccessToken = (userId) => {
         const payload = {}
         const secret = process.env.ACCESS_TOKEN_SECRET
         const options = {
-            expiresIn: "15s",
+            expiresIn: "1y",
             issuer: "website.com",
             audience: `${userId}`
         }
@@ -62,7 +62,6 @@ exports.verifyAccessToken = (req,res,next) => {
 
     JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
         if (err) {
-
             if (err.name === 'JsonWebTokenError') {
                 return next(createError.Unauthorized());
             } else {
@@ -71,7 +70,6 @@ exports.verifyAccessToken = (req,res,next) => {
         }
         req.payload = payload
         next()
-
     })
 }
 

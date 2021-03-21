@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const contactsController = require('../controllers/contactsController')
+const contactsController = require('../controllers/contactsController');
+const { verifyAccessToken } = require('../helpers/jwt_helper');
 
 
 // @route   GET /api/contacts
@@ -20,8 +21,8 @@ const contactsController = require('../controllers/contactsController')
 // @access  Private
 
 router.route('/')
-    .get(contactsController.getContacts)
-    .post(contactsController.addContact)
+    .get(verifyAccessToken, contactsController.getContacts)
+    .post(verifyAccessToken, contactsController.addContact)
     .put(contactsController.updateContact)
     .delete(contactsController.deleteContact)
 
