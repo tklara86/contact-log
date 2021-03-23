@@ -23,7 +23,7 @@ const { verifyAccessToken } = require('../helpers/jwt_helper');
 router.route('/')
     .get(verifyAccessToken, contactsController.getContacts)
     .post(verifyAccessToken, contactsController.addContact)
-    .put(contactsController.updateContact)
-    .delete(contactsController.deleteContact)
+    .put(verifyAccessToken, contactsController.updateContact)
+    .delete(verifyAccessToken, contactsController.deleteContact)
 
 module.exports = router;
